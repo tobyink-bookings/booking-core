@@ -16,10 +16,15 @@ jobs:
         uses: actions/checkout@v2
         with:
           path: ${{ github.event.repository.name }}
+      - name: Tidy
+        run: |
+          mkdir dist
+          mv -v ${{ github.event.repository.name }} dist
+          rm -fr dist/${{ github.event.repository.name }}/.git dist/${{ github.event.repository.name }}/.github
       - name: Compress
         uses: papeloto/action-zip@v1
         with:
-          files: ${{ github.event.repository.name }}
+          files: dist
           dest: ${{ github.event.repository.name }}-${{ steps.vars.outputs.tag }}.zip
       - name: Release
         uses: softprops/action-gh-release@v1
