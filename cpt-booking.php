@@ -12,7 +12,7 @@
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html 
  */
 
-define( 'BOOKINGS_PLUGIN_VERSION', '1.1' );
+define( 'BOOKINGS_PLUGIN_VERSION', '1.6' );
 
 if ( function_exists( 'get_field' ) ) {
 	require_once( __DIR__ . '/inc/email.php' );
