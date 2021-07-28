@@ -22,6 +22,7 @@ if ( function_exists( 'get_field' ) ) {
 	require_once( __DIR__ . '/inc/ajax.php' );
 	require_once( __DIR__ . '/inc/export.php' );
 	require_once( __DIR__ . '/inc/icalendar.php' );
+	require_once( __DIR__ . '/inc/diary.php' );
 }
 else {
 	add_action( 'admin_notices', function () {

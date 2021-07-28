@@ -12,6 +12,42 @@ add_action( 'booking_export_buttons', function () {
 	);
 } );
 
+function _booking_do_field ( $wanted ) {
+	global $post;
+	list( $f, $fmt, $param ) = explode( '~', $wanted );
+
+	if ( $f === 'id' ) {
+		$value = sprintf( '%08d', $post->ID );
+	}
+	elseif ( in_array( $f, [ 'post_title', 'post_date', 'post_date_gmt', 'post_status', 'post_name', 'post_modified', 'post_modified_gmt' ] ) ) {
+		$value = $post->$f;
+	}
+	else {
+		$value = get_field( $f, $post->ID );
+	}
+
+	if ( $fmt == 'count' ) {
+		return count( $value );
+	}
+	elseif ( $fmt == 'json' ) {
+		return json_encode( $value );
+	}
+	elseif ( $fmt == 'date' ) {
+		return date( $param, strtotime( $value ) );
+	}
+	elseif ( $fmt == 'sprintf' ) {
+		return sprintf( $param, $value );
+	}
+	elseif ( $fmt == 'summary' ) {
+		return implode( "; ", array_map( function ( $item ) {
+			return implode( " ", array_values($item) );
+		}, $value ) );
+	}
+	else {
+		return $value;
+	}
+}
+
 if ( isset( $_GET['action'] ) && $_GET['action'] == 'booking_export_csv' ) {
 	add_action( 'admin_init', function () {
 
@@ -48,41 +84,7 @@ if ( isset( $_GET['action'] ) && $_GET['action'] == 'booking_export_csv' ) {
 
 		while ( $query->have_posts() ) {
 			$query->the_post();
-			$values = array_map( function ( $wanted ) {
-				global $post;
-				list( $f, $fmt, $param ) = explode( '~', $wanted );
-
-				if ( $f === 'id' ) {
-					$value = sprintf( '%08d', $post->ID );
-				}
-				elseif ( in_array( $f, [ 'post_title', 'post_date', 'post_date_gmt', 'post_status', 'post_name', 'post_modified', 'post_modified_gmt' ] ) ) {
-					$value = $post->$f;
-				}
-				else {
-					$value = get_field( $f, $post->ID );
-				}
-
-				if ( $fmt == 'count' ) {
-					return count( $value );
-				}
-				elseif ( $fmt == 'json' ) {
-					return json_encode( $value );
-				}
-				elseif ( $fmt == 'date' ) {
-					return date( $param, strtotime( $value ) );
-				}
-				elseif ( $fmt == 'sprintf' ) {
-					return sprintf( $param, $value );
-				}
-				elseif ( $fmt == 'summary' ) {
-					return implode( "; ", array_map( function ( $item ) {
-						return implode( " ", array_values($item) );
-					}, $value ) );
-				}
-				else {
-					return $value;
-				}
-			}, $fields );
+			$values = array_map( '_booking_do_field', $fields );
 			fputcsv( $out, $values );
 		}
 

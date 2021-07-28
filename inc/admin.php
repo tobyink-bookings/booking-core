@@ -116,6 +116,7 @@ add_action( 'admin_menu', function () {
 			'booking_fg_client'           => 'Booking Field Groups for Client',
 			'booking_fg_admin'            => 'Booking Field Groups for Admin',
 			'booking_cols'                => 'Columns to show in All Bookings',
+			'booking_cols_diary'          => 'Columns to show in Diary',
 			'booking_default_status'      => 'Booking Default Status',
 			'booking_accepted_status'     => 'Booking Accepted Status',
 			'booking_payment_status'      => 'Booking Paid Status',
