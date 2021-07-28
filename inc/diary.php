@@ -11,7 +11,7 @@ add_action( 'admin_menu', function () {
 		$field  = $config->dtstart_field;
 
 		echo '<style media="print">
-			#adminmenumain, #day_selection { display: none }
+			#adminmenumain, .noprint { display: none }
 			#wpcontent, #wpfooter { margin-left: 0 }
 		</style>';
 
@@ -36,7 +36,7 @@ add_action( 'admin_menu', function () {
 		if ( ! $_REQUEST['modus'] ) {
 			$_REQUEST['modus'] = 'today';
 		}
-		echo '<form action="" method="post" id="day_selection">';
+		echo '<form action="" method="post" class=noprint>';
 		echo '<div>';
 		echo '<label style="margin-right:1.5rem"><input ' . ( ($_REQUEST['modus']=='yesterday')  ? 'checked ' : '' ) . 'type=radio name=modus value=yesterday> Yesterday</label>';
 		echo '<label style="margin-right:1.5rem"><input ' . ( ($_REQUEST['modus']=='today')      ? 'checked ' : '' ) . 'type=radio name=modus value=today> Today</label>';
@@ -85,7 +85,7 @@ add_action( 'admin_menu', function () {
 			echo '<table border=1 class=spaced>';
 			echo '<thead>';
 			echo '<tr>';
-			echo '<th><input type=checkbox id=selectall></th>';
+			echo '<th class=noprint><input type=checkbox id=selectall></th>';
 			echo '<th>ID</th>';
 			echo '<th>Time</th>';
 			foreach ( $fields as $f ) {
@@ -98,7 +98,7 @@ add_action( 'admin_menu', function () {
 				$query1->the_post();
 
 				echo '<tr>';
-				echo '<td><input class=selectthis type=checkbox name="booking_id[]" value=' . get_the_ID() . '>';
+				echo '<td class=noprint><input class=selectthis type=checkbox name="booking_id[]" value=' . get_the_ID() . '>';
 				echo '<td><a href="' . get_edit_post_link() . '">' . get_the_ID() . '</a></td>';
 				echo '<td>' . date( 'H:m', strtotime( get_field( $field ) ) ) . '</td>';
 				foreach ( $fields as $f ) {
@@ -108,7 +108,7 @@ add_action( 'admin_menu', function () {
 			}
 			echo '</tbody>';
 			echo '</table>';
-			echo '<p><input type=submit value="Export Printable Summaries" class="button button-primary"> (not implemented yet)</p>';
+			echo '<p class=noprint><input type=submit value="Export Printable Summaries" class="button button-primary"> (not implemented yet)</p>';
 		}
 		else {
 			echo '<p>No bookings.</p>';
