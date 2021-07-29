@@ -125,6 +125,7 @@ add_action( 'admin_menu', function () {
 			'booking_export_fields'       => 'Export Fields',
 			'booking_icalendar_filename'  => 'iCalendar Filename',
 			'booking_icalendar_config'    => 'iCalendar Config (Advanced Use Only)',
+			'booking_printable_template'  => 'Printable Template (HTML)',
 		];
 
 		$no_trim = [ 'booking_notifications', 'booking_export_fields', 'booking_icalendar_filename', 'booking_icalendar_config', 'booking_stripe_config' ];
@@ -147,7 +148,7 @@ add_action( 'admin_menu', function () {
 			}
 
 			$form_html .= "<p><label for=${key}>${label}</label><br>\n";
-			if ( in_array( $key, [ 'booking_notifications', 'booking_icalendar_config', 'booking_stripe_config' ] ) ) {
+			if ( in_array( $key, [ 'booking_notifications', 'booking_icalendar_config', 'booking_stripe_config', 'booking_printable_template' ] ) ) {
 				$form_html .= "<textarea style='width:100%' name=${key} id=${key} rows=8 cols=78>" . esc_html($val) . "</textarea></p>\n";
 			}
 			else {

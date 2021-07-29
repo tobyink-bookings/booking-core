@@ -1,6 +1,49 @@
 <?php
 
 add_action( 'admin_menu', function () {
+
+	add_submenu_page( 'edit.php?post_type=booking', 'Prinatble Booking Form', 'Printable Form', 'manage_options', 'booking-printable-form', function () {
+
+		$bookings = $_GET['booking'];
+		if ( empty($bookings) || ! is_array($bookings) ) {
+			echo '<div class=wrap><p>Error: no bookings.</p></div>';
+			return true;
+		}
+
+		$template = get_option( 'booking_printable_template', '<p>ID #{{$id}}</p>' );
+
+		echo '<style media="print">
+			#adminmenumain, .noprint { display: none }
+			#wpcontent { margin-left: 0 }
+			#wpfooter { display: none }
+			.page-break { visibility: hidden; page-break-after: always; }
+		</style>';
+
+		echo '<div class=wrap>';
+		foreach ( $bookings as $i => $b ) {
+			$fields               = get_fields( $b );
+			$fields['id']         = sprintf( '%08d', $b );
+			$fields['secret_url'] = home_url( sprintf( '%s?id=%08d-%s', get_option( 'booking_url_payment' ), $b, $fields['secret'] ) );
+			if ( $i > 0 ) { echo '<hr class=page-break>'; }
+			echo _booking_process_template( $template, $fields );
+		}
+		echo '</div>';
+	} );
+
+	add_filter( 'submenu_file', function ( $submenu_file ) {
+		global $plugin_page;
+		$hidden_submenus = [
+			'booking-printable-form' => 'booking-diary',
+		];
+		if ( $plugin_page && isset( $hidden_submenus[$plugin_page] ) ) {
+			$submenu_file =  $hidden_submenus[$plugin_page];
+		}
+		foreach ( $hidden_submenus as $submenu => $unused ) {
+			remove_submenu_page( 'edit.php?post_type=booking', $submenu );
+		}
+		return $submenu_file;
+	} );
+
 	add_submenu_page( 'edit.php?post_type=booking', 'Booking Diary', 'Diary', 'manage_options', 'booking-diary', function () {
 
 		if ( !current_user_can( 'manage_options' ) ) {
@@ -82,6 +125,9 @@ add_action( 'admin_menu', function () {
 		$fields = explode( ',', get_option( 'booking_cols_diary', 'email_address' ) );
 
 		if ( $query1->have_posts() ) {
+			echo '<form method=get action="' . esc_html( admin_url( 'edit.php' ) ) . '">';
+			echo '<input type=hidden name=post_type value=booking>';
+			echo '<input type=hidden name=page value=booking-printable-form>';
 			echo '<table border=1 class=spaced>';
 			echo '<thead>';
 			echo '<tr>';
@@ -98,8 +144,8 @@ add_action( 'admin_menu', function () {
 				$query1->the_post();
 
 				echo '<tr>';
-				echo '<td class=noprint><input class=selectthis type=checkbox name="booking_id[]" value=' . get_the_ID() . '>';
-				echo '<td><a href="' . get_edit_post_link() . '">' . get_the_ID() . '</a></td>';
+				echo '<td class=noprint><input class=selectthis type=checkbox name="booking[]" value=' . get_the_ID() . '>';
+				echo '<td><a href="' . esc_html( admin_url( 'edit.php?post_type=booking&page=booking-printable-form&booking[]=' . get_the_ID() ) ) . '">' . get_the_ID() . '</a></td>';
 				echo '<td>' . date( 'H:m', strtotime( get_field( $field ) ) ) . '</td>';
 				foreach ( $fields as $f ) {
 					echo '<td>' . esc_html( _booking_do_field( $f ) ) . '</td>';
@@ -108,7 +154,8 @@ add_action( 'admin_menu', function () {
 			}
 			echo '</tbody>';
 			echo '</table>';
-			echo '<p class=noprint><input type=submit value="Export Printable Summaries" class="button button-primary"> (not implemented yet)</p>';
+			echo '<p class=noprint><input type=submit value="Export Printable Summaries" class="button button-primary"></p>';
+			echo '</form>';
 		}
 		else {
 			echo '<p>No bookings.</p>';
