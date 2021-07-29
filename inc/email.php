@@ -1,16 +1,13 @@
 <?php
 
-function _booking_process_template ( $tmp, $fields ) {
-	$msg = preg_replace_callback( '/\{\{(.+?)\}\}/', function ( $mmm ) use ( $fields ) {
-		extract( $fields );
-		try {
-			return eval( 'return (' . $mmm[1] . ');' );
-		}
-		catch ( Throwable $e ) {
-			return 'ERROR:' . $mmm[1];
-		}
-	}, $tmp );
-	return $msg;
+function _booking_process_template ( $template, $fields ) {
+	$php_template = '?>' . preg_replace_callback( '/\{\{(.+?)\}\}/', function ( $mmm ) {
+		return '<?php echo (' . $mmm[1] . '); ?>';
+	}, $template );
+	extract( $fields );
+	ob_start();
+	eval( $php_template );
+	return ob_get_clean();
 }
 
 function booking_send_notifications ( $post_id, $OLD, $NEW ) {
