@@ -126,6 +126,7 @@ add_action( 'admin_menu', function () {
 			'booking_icalendar_filename'  => 'iCalendar Filename',
 			'booking_icalendar_config'    => 'iCalendar Config (Advanced Use Only)',
 			'booking_printable_template'  => 'Printable Template (HTML)',
+			'booking_global_template'     => 'Global Email Template (HTML)',
 		];
 
 		$no_trim = [ 'booking_notifications', 'booking_export_fields', 'booking_icalendar_filename', 'booking_icalendar_config', 'booking_stripe_config' ];
@@ -148,7 +149,7 @@ add_action( 'admin_menu', function () {
 			}
 
 			$form_html .= "<p><label for=${key}>${label}</label><br>\n";
-			if ( in_array( $key, [ 'booking_notifications', 'booking_icalendar_config', 'booking_stripe_config', 'booking_printable_template' ] ) ) {
+			if ( in_array( $key, [ 'booking_notifications', 'booking_icalendar_config', 'booking_stripe_config', 'booking_printable_template', 'booking_global_template' ] ) ) {
 				$form_html .= "<textarea style='width:100%' name=${key} id=${key} rows=8 cols=78>" . esc_html($val) . "</textarea></p>\n";
 			}
 			else {
@@ -270,6 +271,10 @@ add_action( 'admin_menu', function () {
 			<small style="color:#999">If sending HTML mail, remember to use <code style="font-size:inherit">{{esc_html(...)}}</code> in the body to escape special characters as appropriate.</small>
 		</p>
 		<p>
+			<input id="html_global_template" type="checkbox">
+			<label for="html_global_template">Apply global HTML template</label>
+		</p>
+		<p>
 			<label for="conditions" style="display:block">Additional conditions</label>
 			<input id="conditions" type="text" style="width:100%">
 			<small style="color:#999">A PHP expression which, if evaluated to decide whether the mail gets sent. ACF fields are available as variables.</small>
@@ -293,13 +298,13 @@ add_action( 'admin_menu', function () {
 <script type="text/javascript">
 function email_configuration ( $, messages ) {
 
-	var fields = [ 'description', 'to', 'from', 'subject', 'body', 'html', 'conditions', 'to_status', 'disabled' ];
+	var fields = [ 'description', 'to', 'from', 'subject', 'body', 'html', 'html_global_template', 'conditions', 'to_status', 'disabled' ];
 
 	function loadForm ( i ) {
 		var msg = messages[i];
 		for ( var fn in fields ) {
 			var f = fields[fn];
-			if ( f === 'disabled' || f === 'html' ) {
+			if ( f === 'disabled' || f === 'html' || f === 'html_global_template' ) {
 				$( '#' + f ).prop( 'checked', msg[f] );
 			}
 			else {
@@ -313,7 +318,7 @@ function email_configuration ( $, messages ) {
 		var msg = messages[i];
 		for ( var fn in fields ) {
 			var f = fields[fn];
-			if ( f === 'disabled' || f === 'html' ) {
+			if ( f === 'disabled' || f === 'html' || f === 'html_global_template' ) {
 				msg[f] = $( '#' + f ).prop( 'checked' );
 			}
 			else {

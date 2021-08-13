@@ -42,6 +42,14 @@ function booking_send_notifications ( $post_id, $OLD, $NEW ) {
 		$headers = [ "From: $from" ];
 		if ( $msg->html ) {
 			$headers []= "Content-Type: text/html";
+
+			if ( $msg->html_global_template ) {
+				$template = get_option( 'booking_global_template' );
+				$body = _booking_process_template( $template, [
+					'body'      => $body,
+					'subject'   => $subject,
+				] );
+			}
 		}
 
 		error_log( "[$subject] $from -> $to" );
