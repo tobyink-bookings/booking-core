@@ -23,6 +23,9 @@ add_action( 'wp_head', function () {
 		echo '<style>
 		.acf-field { border: 0 !important }
 		.acf-form-submit { padding: 15px 12px }
+		.with-wide-labels .acf-fields.-left > .acf-field:before { width: 75% !important }
+		.with-wide-labels .acf-field .acf-label { width: 75% !important }
+		.with-wide-labels .acf-field .acf-input { width: 25% !important; text-align: center }
 		ul.acf-radio-list li, ul.acf-checkbox-list li { font-size: inherit !important }
 		@media (max-width: 767.98px) { .acf-field { width: 100% !important } }
 		</style>';
