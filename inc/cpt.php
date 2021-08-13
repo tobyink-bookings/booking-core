@@ -52,7 +52,9 @@ add_action( 'init', function () {
 		return $data;
 	}, 10, 2 );
 
-	add_filter( 'acf/save_post', function ( $post_id ) {
+	add_action( 'acf/save_post', function ( $post_id ) {
+
+		global $BOOKING_STATUS_CHANGED;
 
 		if ( 'booking' !== get_post_type( $post_id ) ) {
 			error_log( "HERE: $post_id => " . get_post_type( $post_id ) );
@@ -94,11 +96,26 @@ add_action( 'init', function () {
 		}
 
 		if ( ( ! $existing ) || ( $NEW['status'] != $OLD['status'] ) ) {
-			booking_send_notifications( $post_id, $OLD, $NEW );
+			$BOOKING_STATUS_CHANGED = true;
+		}
+	}, 5, 1 );
+
+	add_action( 'acf/save_post', function ( $post_id ) {
+
+		global $BOOKING_STATUS_CHANGED;
+
+		if ( $BOOKING_STATUS_CHANGED ) {
+			$NEW = get_fields( $post_id );
+			$NEW['id']         = sprintf( '%08d', $post_id );
+			$NEW['secret']     = get_post_meta( $post_id, 'secret', true );
+			$NEW['secret_url'] = home_url( sprintf( '%s?id=%08d-%s', get_option( 'booking_url_payment' ), $post_id, $NEW['secret'] ) );
+			booking_send_notifications( $post_id, $NEW );
 		}
 
 		if ( $post_id > 0 ) {
 			update_post_meta( $post_id, 'existing_booking', $post_id );
 		}
-	}, 5, 1 );
+
+	}, 55, 1 );
+
 } );

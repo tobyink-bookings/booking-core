@@ -10,7 +10,7 @@ function _booking_process_template ( $template, $fields ) {
 	return ob_get_clean();
 }
 
-function booking_send_notifications ( $post_id, $OLD, $NEW ) {
+function booking_send_notifications ( $post_id, $NEW ) {
 
 	$messages = json_decode( get_option( 'booking_notifications', '[]' ), false );
 
@@ -25,10 +25,10 @@ function booking_send_notifications ( $post_id, $OLD, $NEW ) {
 		}
 
 		if ( $msg->conditions ) {
-			$okay = call_user_func( function ( $cond, $post_id, $OLD, $NEW ) {
+			$okay = call_user_func( function ( $cond, $post_id, $NEW ) {
 				extract( $NEW );
 				return eval( "return ($cond);" );
-			}, $msg->conditions, $post_id, $OLD, $NEW );
+			}, $msg->conditions, $post_id, $NEW );
 			if ( ! $okay ) {
 				continue;
 			}
@@ -46,7 +46,7 @@ function booking_send_notifications ( $post_id, $OLD, $NEW ) {
 			if ( $msg->html_global_template ) {
 				$template = get_option( 'booking_global_template' );
 				$body = _booking_process_template( $template, [
-					'body'      => $body,
+					'body'      => wpautop( $body ),
 					'subject'   => $subject,
 				] );
 			}

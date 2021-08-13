@@ -30,7 +30,7 @@ function wp_ajax_pay_booking () {
 		$fields = get_fields( $id );
 		$fields['id'] = sprintf( '%08d', $id );
 		$fields['status'] = get_option( 'booking_payment_status', 'Paid' );
-		booking_send_notifications( $id, [], $fields );
+		booking_send_notifications( $id, $fields );
 
 		wp_send_json( [ 'status' => 'ok' ] );
 		wp_die();
