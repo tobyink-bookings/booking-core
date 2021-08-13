@@ -38,6 +38,15 @@ function _booking_do_field ( $wanted ) {
 	elseif ( $fmt == 'sprintf' ) {
 		return sprintf( $param, $value );
 	}
+	elseif ( $fmt == 'checked' ) {
+		$checked = [];
+		foreach ( $value as $k => $v ) {
+			if ( $v ) {
+				$checked []= $k;
+			}
+		}
+		return implode( "; ", $checked );
+	}
 	elseif ( $fmt == 'summary' ) {
 		return implode( "; ", array_map( function ( $item ) {
 			return implode( " ", array_values($item) );
