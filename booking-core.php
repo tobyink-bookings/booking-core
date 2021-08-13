@@ -4,7 +4,7 @@
  * Plugin Name:       TIL Bookings
  * Plugin URI:        https://github.com/tobyink-bookings
  * Description:       Booking form with payments. Requires Advanced Custom Fields (Wordpress plugin) and Stripe (payment gateway).
- * Version:           1.91
+ * Version:           1.92
  * Requires at least: 5.6
  * Requires PHP:      7.2
  * Author:            Toby Ink Ltd
@@ -13,7 +13,7 @@
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html 
  */
 
-define( 'BOOKINGS_PLUGIN_VERSION', '1.91' );
+define( 'BOOKINGS_PLUGIN_VERSION', '1.92' );
 
 if ( function_exists( 'get_field' ) ) {
 	require_once( __DIR__ . '/inc/email.php' );
