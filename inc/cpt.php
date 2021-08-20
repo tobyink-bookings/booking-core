@@ -109,6 +109,9 @@ add_action( 'init', function () {
 			$NEW['id']         = sprintf( '%08d', $post_id );
 			$NEW['secret']     = get_post_meta( $post_id, 'secret', true );
 			$NEW['secret_url'] = home_url( sprintf( '%s?id=%08d-%s', get_option( 'booking_url_payment' ), $post_id, $NEW['secret'] ) );
+			if ( ! $NEW['status'] ) {
+				$NEW['status'] = get_option( 'booking_default_status', 'Requested' );
+			}
 			booking_send_notifications( $post_id, $NEW );
 		}
 
