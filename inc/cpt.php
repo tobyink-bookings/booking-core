@@ -45,6 +45,8 @@ add_action( 'init', function () {
 		'rest_controller_class' => 'WP_REST_Posts_Controller',
 	] );
 
+	remove_post_type_support( 'booking', 'title' );
+
 	add_filter( 'wp_insert_post_data', function ( $data, $postarr ) {
 		if ( $data['post_type'] == 'booking' ) {
 			$data['post_title'] = 'Booking';
