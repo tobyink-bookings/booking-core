@@ -1,6 +1,9 @@
 <?php
 
 add_action( 'init', function () {
+	$THANKS = get_option( 'booking_url_booking_thanks' );
+	$FIELDS = get_option( 'booking_fg_client' );
+	
 	acf_register_form( [
 		'id'               => 'new-booking',
 		'post_id'          => 'new_post',
@@ -8,10 +11,31 @@ add_action( 'init', function () {
 		'post_title'       => false,
 		'post_content'     => false,
 		'uploader'         => 'basic',
-		'return'           => home_url( get_option( 'booking_url_booking_thanks' ) ),
+		'return'           => home_url( $THANKS ),
 		'submit_value'     => 'Request booking',
-		'field_groups'     => explode( ',', get_option( 'booking_fg_client' ) ),
+		'field_groups'     => explode( ',', $FIELDS ),
 	] );
+
+	if ( $c = get_option( 'booking_form_config' ) ) {
+		$config = json_decode( $c, true );
+		foreach ( $config as $id => $form_config ) {
+			$template = [
+				'id'               => $id,
+				'post_id'          => 'new_post',
+				'new_post'         => [ 'post_type' => 'booking', 'post_status' => 'publish' ],
+				'post_title'       => false,
+				'post_content'     => false,
+				'uploader'         => 'basic',
+				'return'           => home_url( $THANKS ),
+				'submit_value'     => 'Request booking',
+				'field_groups'     => explode( ',', $FIELDS ),
+			];
+			foreach ( $form_config as $k => $v ) {
+				$template[$k] = $v;
+			}
+			acf_register_form( $template );
+		}
+	}
 } );
 
 add_action( 'wp_head', function () {
@@ -43,8 +67,10 @@ add_action( 'wp_head', function () {
 }, 1 );
 
 add_shortcode( 'booking-booking',  function ( $atts, $content='') {
+	$id = isset($atts['id']) ? $atts['id'] : 'new-booking';
+
 	ob_start();
-	acf_form('new-booking');
+	acf_form( $id );
 	return ob_get_clean();
 } );
 
