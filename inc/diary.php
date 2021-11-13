@@ -1,5 +1,12 @@
 <?php
 
+add_filter( 'booking_settings', function ( $keys ) {
+	$keys['section_diary']               = [ 'heading' => 'Diary' ];
+	$keys['booking_cols_diary']          = [ 'label' => 'Columns to show in Diary' ];
+	$keys['booking_printable_template']  = [ 'label' => 'Printable Template (HTML)', 'type' => 'textarea' ];
+	return $keys;
+} );
+
 add_action( 'admin_menu', function () {
 
 	add_submenu_page( 'edit.php?post_type=booking', 'Prinatble Booking Form', 'Printable Form', 'manage_options', 'booking-printable-form', function () {

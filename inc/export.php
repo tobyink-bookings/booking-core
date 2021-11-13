@@ -1,5 +1,11 @@
 <?php
 
+add_filter( 'booking_settings', function ( $keys ) {
+	$keys['section_export']              = [ 'heading' => 'CSV Export' ];
+	$keys['booking_export_fields']       = [ 'label' => 'Export Fields', 'notrim' => true ];
+	return $keys;
+} );
+
 add_action( 'booking_export_buttons', function () {
 	$url = sprintf(
 		'%s&action=booking_export_csv&_wpnonce=%s',

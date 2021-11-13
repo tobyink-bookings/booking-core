@@ -1,5 +1,12 @@
 <?php
 
+add_filter( 'booking_settings', function ( $keys ) {
+	$keys['section_email']               = [ 'heading' => 'Emails' ];
+	$keys['booking_notifications']       = [ 'label' => 'Notifications Data (Advanced Use Only)', 'notrim' => true, 'type' => 'textarea' ];
+	$keys['booking_global_template']     = [ 'label' => 'Global Email Template (HTML)', 'type' => 'textarea' ];
+	return $keys;
+} );
+
 function _booking_process_template ( $template, $fields ) {
 	$php_template = '?>' . preg_replace_callback( '/\{\{(.+?)\}\}/', function ( $mmm ) {
 		return '<?php echo (' . $mmm[1] . '); ?>';

@@ -104,41 +104,48 @@ add_action( 'admin_menu', function () {
 		echo '<div class=wrap>';
 		echo '<h1>Booking Settings</h1>';
 
-		$keys = [
-			'booking_stripe_key'          => 'Stripe Publishable Key',
-			'booking_stripe_secret'       => 'Stripe Secret Key',
-			'booking_stripe_config'       => 'Stripe Config (Advanced Use Only)',
-			'booking_places_api_key'      => 'Places API Key',
-			'booking_places_bias'         => 'Places Bias (JSON)',
-			'booking_url_booking_thanks'  => 'URL for Booking Form Thanks',
-			'booking_url_payment'         => 'URL for Payment Form',
-			'booking_url_payment_thanks'  => 'URL for Payment Form Thanks',
-			'booking_fg_client'           => 'Booking Field Groups for Client',
-			'booking_fg_admin'            => 'Booking Field Groups for Admin',
-			'booking_cols'                => 'Columns to show in All Bookings',
-			'booking_cols_diary'          => 'Columns to show in Diary',
-			'booking_default_status'      => 'Booking Default Status',
-			'booking_accepted_status'     => 'Booking Accepted Status',
-			'booking_payment_status'      => 'Booking Paid Status',
-			'booking_cancelled_status'    => 'Booking Cancelled Status',
-			'booking_notifications'       => 'Notifications Data (Advanced Use Only)',
-			'booking_export_fields'       => 'Export Fields',
-			'booking_icalendar_filename'  => 'iCalendar Filename',
-			'booking_icalendar_config'    => 'iCalendar Config (Advanced Use Only)',
-			'booking_printable_template'  => 'Printable Template (HTML)',
-			'booking_global_template'     => 'Global Email Template (HTML)',
-		];
+		$keys = apply_filters( 'booking_settings', [
+			'section_acf'                 => [ 'heading' => 'Field Setup' ],
+			'booking_fg_client'           => [ 'label' => 'Booking Field Groups for Client' ],
+			'booking_fg_admin'            => [ 'label' => 'Booking Field Groups for Admin' ],
+			'booking_cols'                => [ 'label' => 'Columns to show in All Bookings' ],
 
-		$no_trim = [ 'booking_notifications', 'booking_export_fields', 'booking_icalendar_filename', 'booking_icalendar_config', 'booking_stripe_config' ];
+			'section_status'              => [ 'heading' => 'Statuses' ],
+			'booking_default_status'      => [ 'label' => 'Booking Default Status' ],
+			'booking_accepted_status'     => [ 'label' => 'Booking Accepted Status' ],
+			'booking_payment_status'      => [ 'label' => 'Booking Paid Status' ],
+			'booking_cancelled_status'    => [ 'label' => 'Booking Cancelled Status' ],
+
+			'section_urls'                => [ 'heading' => 'Page URLs' ],
+			'booking_url_booking_thanks'  => [ 'label' => 'URL for Booking Form Thanks' ],
+			'booking_url_payment'         => [ 'label' => 'URL for Payment Form' ],
+			'booking_url_payment_thanks'  => [ 'label' => 'URL for Payment Form Thanks' ],
+
+			'section_stripe'              => [ 'heading' => 'Stripe Configuration' ],
+			'booking_stripe_key'          => [ 'label' => 'Stripe Publishable Key' ],
+			'booking_stripe_secret'       => [ 'label' => 'Stripe Secret Key' ],
+			'booking_stripe_config'       => [ 'label' => 'Stripe Config (Advanced Use Only)', 'notrim' => true, 'type' => 'textarea' ],
+
+			'section_places'              => [ 'heading' => 'Google Places API Configuration' ],
+			'booking_places_api_key'      => [ 'label' => 'Places API Key' ],
+			'booking_places_bias'         => [ 'label' => 'Places Bias (JSON)', 'notrim' => true ],
+		] );
 
 		$form_html = '';
-		foreach ( $keys as $key => $label ) {
-			$key = strtolower( $key );
-			$val = get_option( $key );
+		foreach ( $keys as $key => $field_data ) {
+			if ( isset($field_data['heading']) ) {
+				$form_html .= "<h2>" . $field_data['heading'] . "</h2>";
+				continue;
+			}
+
+			$key   = strtolower( $key );
+			$val   = get_option( $key );
+			$label = $field_data['label'];
+			$type  = isset($field_data['type']) ? $field_data['type'] : 'text';
 
 			if ( array_key_exists($key, $_POST) && stripslashes($_POST[$key]) != $val ) {
 				$val = stripslashes($_POST[$key]);
-				if ( ! in_array( $key, $no_trim ) ) {
+				if ( ! $field_data['notrim'] ) {
 					$val = implode( ',', array_map(
 						function ( $str ) { return trim( $str ); },
 						explode( ',', $val )
@@ -149,7 +156,7 @@ add_action( 'admin_menu', function () {
 			}
 
 			$form_html .= "<p><label for=${key}>${label}</label><br>\n";
-			if ( in_array( $key, [ 'booking_notifications', 'booking_icalendar_config', 'booking_stripe_config', 'booking_printable_template', 'booking_global_template' ] ) ) {
+			if ( $type == 'textarea' ) {
 				$form_html .= "<textarea style='width:100%' name=${key} id=${key} rows=8 cols=78>" . esc_html($val) . "</textarea></p>\n";
 			}
 			else {

@@ -1,5 +1,13 @@
 <?php
 
+add_filter( 'booking_settings', function ( $keys ) {
+	$keys['section_icalendar']           = [ 'heading' => 'CSV Export' ];
+	$keys['booking_icalendar_filename']  = [ 'label' => 'iCalendar Filename', 'notrim' => true ];
+	$keys['booking_icalendar_config']    = [ 'label' => 'iCalendar Config (Advanced Use Only)', 'notrim' => true, 'type' => 'textarea' ];
+	return $keys;
+} );
+
+
 add_action( 'booking_export_buttons', function () {
 	$filename = get_option( 'booking_icalendar_filename' );
 	if ( ! $filename ) {
