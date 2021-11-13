@@ -2,7 +2,7 @@
 
 add_filter( 'booking_settings', function ( $keys ) {
 	$keys['section_email']               = [ 'heading' => 'Emails' ];
-	$keys['booking_notifications']       = [ 'label' => 'Notifications Data (Advanced Use Only)', 'notrim' => true, 'type' => 'textarea' ];
+	$keys['booking_notifications']       = [ 'label' => 'Notifications Data (JSON, Advanced Use Only)', 'notrim' => true, 'type' => 'textarea' ];
 	$keys['booking_global_template']     = [ 'label' => 'Global Email Template (HTML)', 'type' => 'textarea' ];
 	return $keys;
 } );

@@ -109,6 +109,7 @@ add_action( 'admin_menu', function () {
 			'booking_fg_client'           => [ 'label' => 'Booking Field Groups for Client' ],
 			'booking_fg_admin'            => [ 'label' => 'Booking Field Groups for Admin' ],
 			'booking_cols'                => [ 'label' => 'Columns to show in All Bookings' ],
+			'booking_form_config'         => [ 'label' => 'Form Config (JSON, Advanced Use Only)', 'notrim' => true, 'type' => 'textarea' ],
 
 			'section_status'              => [ 'heading' => 'Statuses' ],
 			'booking_default_status'      => [ 'label' => 'Booking Default Status' ],
@@ -124,7 +125,7 @@ add_action( 'admin_menu', function () {
 			'section_stripe'              => [ 'heading' => 'Stripe Configuration' ],
 			'booking_stripe_key'          => [ 'label' => 'Stripe Publishable Key' ],
 			'booking_stripe_secret'       => [ 'label' => 'Stripe Secret Key' ],
-			'booking_stripe_config'       => [ 'label' => 'Stripe Config (Advanced Use Only)', 'notrim' => true, 'type' => 'textarea' ],
+			'booking_stripe_config'       => [ 'label' => 'Stripe Config (JSON, Advanced Use Only)', 'notrim' => true, 'type' => 'textarea' ],
 
 			'section_places'              => [ 'heading' => 'Google Places API Configuration' ],
 			'booking_places_api_key'      => [ 'label' => 'Places API Key' ],

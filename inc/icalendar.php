@@ -1,9 +1,9 @@
 <?php
 
 add_filter( 'booking_settings', function ( $keys ) {
-	$keys['section_icalendar']           = [ 'heading' => 'CSV Export' ];
+	$keys['section_icalendar']           = [ 'heading' => 'iCalendar Export' ];
 	$keys['booking_icalendar_filename']  = [ 'label' => 'iCalendar Filename', 'notrim' => true ];
-	$keys['booking_icalendar_config']    = [ 'label' => 'iCalendar Config (Advanced Use Only)', 'notrim' => true, 'type' => 'textarea' ];
+	$keys['booking_icalendar_config']    = [ 'label' => 'iCalendar Config (JSON, Advanced Use Only)', 'notrim' => true, 'type' => 'textarea' ];
 	return $keys;
 } );
 
